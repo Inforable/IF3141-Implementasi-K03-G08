@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="action_dashboard_keuangan" model="ir.actions.act_url">
+        <field name="name">Dashboard Keuangan</field>
+        <field name="url">/bootcamp/dashboard/keuangan</field>
+        <field name="target">self</field>
+    </record>
+
+    <template id="template_dashboard_keuangan" name="Dashboard Keuangan Bootcamp Fapet">
+        <t t-call="web.layout">
+            <t t-set="head">
+                <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"/>
+                <style>
+                    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                        background: #f5f5f5;
+                        display: flex;
+                        min-height: 100vh;
+                    }
+
+                    /* ── SIDEBAR ── */
+                    .sidebar {
+                        width: 240px;
+                        background: #2d1b3d;
+                        color: #fff;
+                        display: flex;
+                        flex-direction: column;
+                        min-height: 100vh;
+                        position: fixed;
+                        left: 0; top: 0;
+                    }
+                    .sidebar-brand {
+                        padding: 20px 20px 16px;
+                        font-size: 1.1rem;
+                        font-weight: 700;
+                        letter-spacing: 0.5px;
+                        border-bottom: 1px solid rgba(255,255,255,0.08);
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    }
+                    .sidebar-brand .brand-icon {
+                        width: 32px; height: 32px;
+                        background: #7c3aed;
+                        border-radius: 8px;
+                        display: flex; align-items: center; justify-content: center;
+                        font-size: 1rem;
+                    }
+                    .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+                    .nav-item {
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        padding: 10px 20px;
+                        color: rgba(255,255,255,0.7);
+                        text-decoration: none;
+                        font-size: 0.875rem;
+                        border-radius: 0;
+                        transition: background 0.15s, color 0.15s;
+                        cursor: pointer;
+                    }
+                    .nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; text-decoration: none; }
+                    .nav-item.active { background: #7c3aed; color: #fff; }
+                    .nav-item i { width: 18px; text-align: center; font-size: 0.95rem; }
+                    .sidebar-footer {
+                        padding: 16px 20px;
+                        border-top: 1px solid rgba(255,255,255,0.08);
+                    }
+                    .user-info {
+                        display: flex; align-items: center; gap: 10px;
+                        margin-bottom: 12px;
+                    }
+                    .user-avatar {
+                        width: 36px; height: 36px;
+                        background: #7c3aed;
+                        border-radius: 50%;
+                        display: flex; align-items: center; justify-content: center;
+                        font-weight: 700; font-size: 0.9rem; color: #fff;
+                        flex-shrink: 0;
+                    }
+                    .user-name { font-size: 0.875rem; font-weight: 600; color: #fff; }
+                    .user-role { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+                    .logout-btn {
+                        display: flex; align-items: center; gap: 8px;
+                        color: rgba(255,255,255,0.6);
+                        text-decoration: none;
+                        font-size: 0.8rem;
+                        padding: 6px 0;
+                        transition: color 0.15s;
+                    }
+                    .logout-btn:hover { color: #fff; text-decoration: none; }
+
+                    /* ── MAIN CONTENT ── */
+                    .main-content {
+                        margin-left: 240px;
+                        flex: 1;
+                        padding: 32px;
+                        min-height: 100vh;
+                    }
+                    .topbar {
+                        display: flex; justify-content: space-between; align-items: flex-start;
+                        margin-bottom: 20px;
+                    }
+                    .page-title { font-size: 1.6rem; font-weight: 700; color: #1a1a2e; }
+                    .page-subtitle { font-size: 0.875rem; color: #888; margin-top: 4px; }
+                    .topbar-date { font-size: 0.875rem; color: #888; }
+
+                    /* ── FILTER BAR ── */
+                    .filter-bar {
+                        display: flex; align-items: center; gap: 8px;
+                        margin-bottom: 24px;
+                        background: #fff;
+                        border-radius: 12px;
+                        padding: 12px 20px;
+                        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+                    }
+                    .filter-label {
+                        font-size: 0.875rem; font-weight: 600;
+                        color: #1a1a2e; margin-right: 8px;
+                    }
+                    .filter-pill {
+                        border: none;
+                        border-radius: 20px;
+                        padding: 6px 18px;
+                        font-size: 0.82rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: background 0.15s, color 0.15s;
+                        background: #f3f4f6;
+                        color: #555;
+                        text-decoration: none;
+                        display: inline-block;
+                    }
+                    .filter-pill:hover { background: #e5e7eb; color: #1a1a2e; text-decoration: none; }
+                    .filter-pill.active { background: #7c3aed; color: #fff; }
+
+                    /* ── WIDGET CARDS ── */
+                    .widget-grid {
+                        display: grid;
+                        grid-template-columns: repeat(4, 1fr);
+                        gap: 16px;
+                        margin-bottom: 24px;
+                    }
+                    .widget-card {
+                        background: #fff;
+                        border-radius: 12px;
+                        padding: 20px;
+                        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+                    }
+                    .widget-top {
+                        display: flex; justify-content: space-between; align-items: flex-start;
+                        margin-bottom: 16px;
+                    }
+                    .widget-icon-wrap {
+                        width: 44px; height: 44px;
+                        border-radius: 10px;
+                        display: flex; align-items: center; justify-content: center;
+                        font-size: 1.2rem; color: #fff;
+                    }
+                    .icon-green  { background: #22c55e; }
+                    .icon-blue   { background: #3b82f6; }
+                    .icon-purple { background: #8b5cf6; }
+                    .icon-orange { background: #f97316; }
+                    .widget-trend {
+                        font-size: 0.78rem; font-weight: 600;
+                        display: flex; align-items: center; gap: 3px;
+                    }
+                    .trend-up   { color: #22c55e; }
+                    .trend-down { color: #ef4444; }
+                    .widget-value {
+                        font-size: 1.4rem; font-weight: 700;
+                        color: #1a1a2e; margin-bottom: 4px;
+                    }
+                    .widget-label { font-size: 0.8rem; color: #888; }
+
+                    /* ── CHART PANELS ── */
+                    .chart-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 16px;
+                        margin-bottom: 24px;
+                    }
+                    .panel-card {
+                        background: #fff;
+                        border-radius: 12px;
+                        padding: 24px;
+                        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+                    }
+                    .panel-title {
+                        font-size: 1rem; font-weight: 700;
+                        color: #1a1a2e; margin-bottom: 20px;
+                    }
+                    .chart-container {
+                        position: relative;
+                        height: 220px;
+                    }
+
+                    /* ── TABLE ── */
+                    .table-card {
+                        background: #fff;
+                        border-radius: 12px;
+                        padding: 24px;
+                        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+                        margin-bottom: 24px;
+                    }
+                    .laporan-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 0.875rem;
+                    }
+                    .laporan-table th {
+                        text-align: left;
+                        padding: 10px 12px;
+                        font-weight: 600;
+                        color: #1a1a2e;
+                        border-bottom: 2px solid #f3f4f6;
+                        background: #fafafa;
+                    }
+                    .laporan-table td {
+                        padding: 10px 12px;
+                        color: #444;
+                        border-bottom: 1px solid #f3f4f6;
+                    }
+                    .laporan-table tr:last-child td { border-bottom: none; }
+                    .laporan-table tr:hover td { background: #fafbff; }
+                    .td-pemasukan { color: #22c55e; font-weight: 600; }
+                    .td-pengeluaran { color: #ef4444; font-weight: 600; }
+                    .td-saldo { font-weight: 700; color: #1a1a2e; }
+                </style>
+            </t>
+
+            <div style="display:flex; min-height:100vh;">
+
+                <!-- ═══════════ SIDEBAR ═══════════ -->
+                <div class="sidebar">
+                    <div class="sidebar-brand">
+                        <div class="brand-icon">&#9632;</div>
+                        Odoo
+                    </div>
+
+                    <nav class="sidebar-nav">
+                        <a href="/bootcamp/dashboard" class="nav-item">
+                            <i class="fa fa-th-large"/> Dashboard Utama
+                        </a>
+                        <t t-if="user_groups['is_direktur'] or user_groups['is_kepala_keuangan']">
+                            <a href="/bootcamp/dashboard/keuangan" class="nav-item active">
+                                <i class="fa fa-dollar"/> Dashboard Keuangan
+                            </a>
+                        </t>
+                        <t t-if="user_groups['is_direktur'] or user_groups['is_kepala_prosesing']">
+                            <a href="#" class="nav-item">
+                                <i class="fa fa-cube"/> Dashboard Pengadaan
+                            </a>
+                        </t>
+                        <t t-if="user_groups['is_direktur'] or user_groups['is_manajer_operasional'] or user_groups['is_kepala_keuangan'] or user_groups['is_kepala_prosesing']">
+                            <a href="#" class="nav-item">
+                                <i class="fa fa-line-chart"/> Dashboard KPI
+                            </a>
+                        </t>
+                        <t t-if="user_groups['is_direktur'] or user_groups['is_kepala_keuangan']">
+                            <a href="#" class="nav-item">
+                                <i class="fa fa-file-text"/> Input Biaya Operasional
+                            </a>
+                        </t>
+                        <t t-if="user_groups['is_direktur'] or user_groups['is_kepala_prosesing']">
+                            <a href="#" class="nav-item">
+                                <i class="fa fa-archive"/> Input Stok Bahan Baku
+                            </a>
+                        </t>
+                        <t t-if="user_groups['is_direktur'] or user_groups['is_manajer_operasional']">
+                            <a href="#" class="nav-item">
+                                <i class="fa fa-bullseye"/> Target KPI
+                            </a>
+                        </t>
+                        <t t-if="user_groups['is_direktur'] or user_groups['is_staff_it']">
+                            <a href="#" class="nav-item">
+                                <i class="fa fa-refresh"/> Sinkronisasi POS
+                            </a>
+                        </t>
+                        <t t-if="user_groups['is_staff_it']">
+                            <a href="#" class="nav-item">
+                                <i class="fa fa-users"/> Kelola Hak Akses
+                            </a>
+                        </t>
+                        <t t-if="user_groups['is_direktur'] or user_groups['is_staff_it']">
+                            <a href="#" class="nav-item">
+                                <i class="fa fa-history"/> Log Sistem
+                            </a>
+                        </t>
+                    </nav>
+
+                    <div class="sidebar-footer">
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                <t t-esc="user.name[0].upper()"/>
+                            </div>
+                            <div>
+                                <div class="user-name" t-esc="user.name"/>
+                                <div class="user-role" t-esc="user.groups_id[0].name if user.groups_id else ''"/>
+                            </div>
+                        </div>
+                        <a href="/web/session/logout" class="logout-btn">
+                            <i class="fa fa-sign-out"/> Logout
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ═══════════ MAIN CONTENT ═══════════ -->
+                <div class="main-content">
+
+                    <!-- Topbar -->
+                    <div class="topbar">
+                        <div>
+                            <div class="page-title">Dashboard Keuangan</div>
+                            <div class="page-subtitle">Laporan dan analisis keuangan operasional</div>
+                        </div>
+                        <div class="topbar-date" id="current-date"/>
+                    </div>
+
+                    <!-- Filter Bar (UC-04) -->
+                    <div class="filter-bar">
+                        <span class="filter-label"><i class="fa fa-filter"/> Filter Periode:</span>
+                        <a t-att-href="'/bootcamp/dashboard/keuangan?periode=hari'"
+                           t-att-class="'filter-pill' + (' active' if periode == 'hari' else '')">
+                            <i class="fa fa-calendar-o"/> Hari Ini
+                        </a>
+                        <a t-att-href="'/bootcamp/dashboard/keuangan?periode=bulan'"
+                           t-att-class="'filter-pill' + (' active' if periode == 'bulan' else '')">
+                            <i class="fa fa-calendar"/> Bulan Ini
+                        </a>
+                        <a t-att-href="'/bootcamp/dashboard/keuangan?periode=tahun'"
+                           t-att-class="'filter-pill' + (' active' if periode == 'tahun' else '')">
+                            <i class="fa fa-calendar-check-o"/> Tahun Ini
+                        </a>
+                    </div>
+
+                    <!-- Widget Cards -->
+                    <div class="widget-grid">
+                        <div class="widget-card">
+                            <div class="widget-top">
+                                <div class="widget-icon-wrap icon-green">
+                                    <i class="fa fa-dollar"/>
+                                </div>
+                                <span class="widget-trend trend-up">
+                                    <i class="fa fa-arrow-up"/> +12.5%
+                                </span>
+                            </div>
+                            <div class="widget-value" t-esc="total_pendapatan"/>
+                            <div class="widget-label">Total Pendapatan</div>
+                        </div>
+                        <div class="widget-card">
+                            <div class="widget-top">
+                                <div class="widget-icon-wrap icon-blue">
+                                    <i class="fa fa-line-chart"/>
+                                </div>
+                                <span class="widget-trend trend-down">
+                                    <i class="fa fa-arrow-down"/> -5.2%
+                                </span>
+                            </div>
+                            <div class="widget-value" t-esc="total_biaya"/>
+                            <div class="widget-label">Total Biaya Operasional</div>
+                        </div>
+                        <div class="widget-card">
+                            <div class="widget-top">
+                                <div class="widget-icon-wrap icon-purple">
+                                    <i class="fa fa-check-circle"/>
+                                </div>
+                                <span class="widget-trend trend-up">
+                                    <i class="fa fa-arrow-up"/> +8.3%
+                                </span>
+                            </div>
+                            <div class="widget-value" t-esc="laba_bersih"/>
+                            <div class="widget-label">Laba Bersih</div>
+                        </div>
+                        <div class="widget-card">
+                            <div class="widget-top">
+                                <div class="widget-icon-wrap icon-orange">
+                                    <i class="fa fa-percent"/>
+                                </div>
+                                <span class="widget-trend trend-up">
+                                    <i class="fa fa-arrow-up"/> +3.1%
+                                </span>
+                            </div>
+                            <div class="widget-value" t-esc="margin"/>
+                            <div class="widget-label">Margin Keuntungan</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="chart-grid">
+                        <div class="panel-card">
+                            <div class="panel-title">
+                                <i class="fa fa-area-chart" style="color:#7c3aed; margin-right:8px;"/>
+                                Tren Cashflow
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="cashflowChart"
+                                    t-att-data-labels="cashflow_labels"
+                                    t-att-data-values="cashflow_data"/>
+                            </div>
+                        </div>
+                        <div class="panel-card">
+                            <div class="panel-title">
+                                <i class="fa fa-pie-chart" style="color:#7c3aed; margin-right:8px;"/>
+                                Rincian Biaya Operasional
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="biayaChart"
+                                    t-att-data-labels="biaya_labels"
+                                    t-att-data-values="biaya_data"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Laporan Keuangan Detail -->
+                    <div class="table-card">
+                        <div class="panel-title">
+                            <i class="fa fa-table" style="color:#7c3aed; margin-right:8px;"/>
+                            Laporan Keuangan Detail
+                        </div>
+                        <table class="laporan-table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Keterangan</th>
+                                    <th>Pemasukan</th>
+                                    <th>Pengeluaran</th>
+                                    <th>Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="laporan_rows" t-as="row">
+                                    <tr>
+                                        <td t-esc="row['tanggal']"/>
+                                        <td t-esc="row['keterangan']"/>
+                                        <td>
+                                            <t t-if="row['pemasukan'] != '-'">
+                                                <span class="td-pemasukan" t-esc="row['pemasukan']"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color:#bbb;">-</span>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <t t-if="row['pengeluaran'] != '-'">
+                                                <span class="td-pengeluaran" t-esc="row['pengeluaran']"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color:#bbb;">-</span>
+                                            </t>
+                                        </td>
+                                        <td class="td-saldo" t-esc="row['saldo']"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <script>
+                // Tanggal hari ini dalam bahasa Indonesia
+                (function() {
+                    var d = new Date();
+                    var days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+                    var months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+                    var el = document.getElementById('current-date');
+                    if (el) {
+                        el.textContent = days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+                    }
+                })();
+
+                // Inisialisasi charts setelah Chart.js dimuat
+                (function() {
+                    var cashflowCanvas = document.getElementById('cashflowChart');
+                    var biayaCanvas = document.getElementById('biayaChart');
+
+                    if (cashflowCanvas &amp;&amp; typeof Chart !== 'undefined') {
+                        var cfLabels = JSON.parse(cashflowCanvas.dataset.labels || '[]');
+                        var cfData = JSON.parse(cashflowCanvas.dataset.values || '[]');
+                        new Chart(cashflowCanvas, {
+                            type: 'line',
+                            data: {
+                                labels: cfLabels,
+                                datasets: [{
+                                    label: 'Cashflow',
+                                    data: cfData,
+                                    borderColor: '#7c3aed',
+                                    backgroundColor: 'rgba(124,58,237,0.08)',
+                                    borderWidth: 2,
+                                    tension: 0.4,
+                                    fill: true,
+                                    pointBackgroundColor: '#7c3aed',
+                                    pointRadius: 4,
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: { legend: { display: false } },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: function(v) {
+                                                if (v >= 1000000) return 'Rp ' + (v/1000000).toFixed(0) + 'jt';
+                                                if (v >= 1000) return 'Rp ' + (v/1000).toFixed(0) + 'rb';
+                                                return 'Rp ' + v;
+                                            },
+                                            font: { size: 11 }
+                                        },
+                                        grid: { color: '#f3f4f6' }
+                                    },
+                                    x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+                                }
+                            }
+                        });
+                    }
+
+                    if (biayaCanvas &amp;&amp; typeof Chart !== 'undefined') {
+                        var bLabels = JSON.parse(biayaCanvas.dataset.labels || '[]');
+                        var bData = JSON.parse(biayaCanvas.dataset.values || '[]');
+                        new Chart(biayaCanvas, {
+                            type: 'doughnut',
+                            data: {
+                                labels: bLabels,
+                                datasets: [{
+                                    data: bData,
+                                    backgroundColor: ['#7c3aed','#3b82f6','#22c55e','#f97316','#8b5cf6'],
+                                    borderWidth: 2,
+                                    borderColor: '#fff',
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'right',
+                                        labels: { font: { size: 11 }, padding: 12 }
+                                    }
+                                },
+                                cutout: '60%'
+                            }
+                        });
+                    }
+                })();
+            </script>
+        </t>
+    </template>
+
+</odoo>
