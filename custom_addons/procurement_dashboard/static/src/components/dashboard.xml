@@ -6,29 +6,39 @@
                 <p class="text-muted">Pemantauan stok dan visualisasi data pengadaan</p>
             </div>
 
-            <div class="row mb-4" t-if="!state.loading">
-                <div class="col-md-3">
-                    <div class="card p-3 shadow-sm border-0">
-                        <small class="text-muted">Total Item</small>
-                        <h2 class="fw-bold" t-out="state.data.cards.total"/>
+            <div class="row g-3 mb-4" t-if="!state.loading">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <h5 class="card-title fw-bold mb-3">Jumlah Bahan per Kategori</h5>
+                        <canvas id="categoryChart" style="height: 320px;"></canvas>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card p-3 shadow-sm border-0 bg-success text-white">
-                        <small>Stok Normal</small>
-                        <h2 class="fw-bold" t-out="state.data.cards.normal"/>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card p-3 shadow-sm border-0 bg-warning">
-                        <small>Perlu Perhatian</small>
-                        <h2 class="fw-bold" t-out="state.data.cards.perhatian"/>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card p-3 shadow-sm border-0 bg-danger text-white">
-                        <small>Stok Kritis</small>
-                        <h2 class="fw-bold" t-out="state.data.cards.kritis"/>
+                <div class="col-lg-4">
+                    <div class="row g-3 h-100">
+                        <div class="col-6">
+                            <div class="card p-3 shadow-sm border-0 h-100">
+                                <small class="text-muted">Total Item</small>
+                                <h2 class="fw-bold" t-out="state.data.cards.total"/>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card p-3 shadow-sm border-0 bg-success text-white h-100">
+                                <small>Stok Normal</small>
+                                <h2 class="fw-bold" t-out="state.data.cards.normal"/>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card p-3 shadow-sm border-0 bg-warning h-100">
+                                <small>Perlu Perhatian</small>
+                                <h2 class="fw-bold" t-out="state.data.cards.perhatian"/>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card p-3 shadow-sm border-0 bg-danger text-white h-100">
+                                <small>Stok Kritis</small>
+                                <h2 class="fw-bold" t-out="state.data.cards.kritis"/>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

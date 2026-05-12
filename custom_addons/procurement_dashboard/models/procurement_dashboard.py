@@ -28,6 +28,14 @@ class ProcurementDashboard(models.Model):
                 'status': material.get_status(),
             })
 
+        category_counts = {}
+        for material in materials_db:
+            category = material.category or 'Tidak Dikategorikan'
+            category_counts[category] = category_counts.get(category, 0) + 1
+
+        chart_labels = list(category_counts.keys())
+        chart_values = list(category_counts.values())
+
         return {
             'cards': {
                 'total': total_item,
@@ -35,7 +43,11 @@ class ProcurementDashboard(models.Model):
                 'perhatian': stok_perhatian,
                 'kritis': stok_kritis
             },
-            'materials': materials
+            'materials': materials,
+            'charts': {
+                'labels': chart_labels or ['Bahan Utama', 'Bahan Tambahan', 'Packaging'],
+                'category_counts': chart_values or [0, 0, 0],
+            }
         }
 
     @api.model
