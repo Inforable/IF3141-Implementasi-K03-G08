@@ -12,6 +12,7 @@
         'security/bootcamp_groups.xml',
         'security/ir.model.access.csv',
         'views/dashboard_utama_views.xml',
+        'views/dashboard_keuangan_views.xml',
         'views/bootcamp_menus.xml',
     ],
     # 'demo': [
