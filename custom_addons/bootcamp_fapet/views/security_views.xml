@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="action_kelola_hak_akses_qweb" model="ir.actions.act_url">
+        <field name="name">Kelola Hak Akses</field>
+        <field name="url">/bootcamp/hak_akses</field>
+        <field name="target">self</field>
+    </record>
+
+    <template id="template_kelola_hak_akses" name="Kelola Hak Akses Bootcamp">
+        <t t-call="web.layout">
+            <t t-set="head">
+                <style>
+                    /* Reset dan Layout Dasar */
+                    * { box-sizing: border-box; margin: 0; padding: 0; }
+                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; display: flex; min-height: 100vh; width: 100%; }
+                    
+                    /* Konten Utama */
+                    .main-content { margin-left: 240px; flex: 1; width: calc(100% - 240px); padding: 32px; }
+                    .topbar { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-start; }
+                    .page-title { font-size: 1.6rem; font-weight: 700; color: #1a1a2e; }
+                    .page-subtitle { font-size: 0.875rem; color: #888; margin-top: 4px; }
+                    
+                    /* Grid Atas (Form Kiri 1 Bagian, List Kanan 2 Bagian) */
+                    .top-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 24px; margin-bottom: 24px; width: 100%; }
+                    
+                    /* Panel Card Umum */
+                    .panel-card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); align-self: start; }
+                    .panel-title { font-size: 1.1rem; font-weight: 700; color: #1a1a2e; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
+
+                    /* Form Elements */
+                    .form-group { margin-bottom: 20px; }
+                    .form-label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 8px; }
+                    .form-control { width: 100%; padding: 12px 14px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.875rem; color: #333; }
+                    .form-control:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+                    .btn-submit { background: #6d4c41; color: #fff; border: none; border-radius: 8px; padding: 14px 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; }
+                    .btn-submit:hover { background: #5d4037; }
+
+                    /* Daftar User (Card Kanan) */
+                    .user-list { display: flex; flex-direction: column; gap: 16px; }
+                    .user-card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; display: flex; gap: 16px; align-items: flex-start; }
+                    .uc-avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+                    .uc-info { flex: 1; }
+                    .uc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+                    .uc-name { font-size: 1rem; font-weight: 700; color: #1a1a2e; }
+                    .uc-username { font-size: 0.8rem; color: #888; }
+                    .uc-role { font-size: 0.8rem; color: #aaa; margin-bottom: 12px; }
+                    .uc-access-label { font-size: 0.75rem; color: #1a1a2e; font-weight: 600; margin-bottom: 8px; }
+                    .uc-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+                    .access-badge { background: #f3f4f6; color: #4b5563; font-size: 0.7rem; padding: 4px 10px; border-radius: 12px; }
+                    .status-aktif { font-size: 0.7rem; background: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+
+                    /* Matriks Table (Bawah) */
+                    .matrix-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+                    .matrix-table th { text-align: left; padding: 12px; font-weight: 600; color: #888; border-bottom: 2px solid #e5e7eb; font-size: 0.75rem; letter-spacing: 0.5px; text-transform: uppercase; }
+                    .matrix-table td { padding: 16px 12px; color: #1a1a2e; border-bottom: 1px solid #f3f4f6; }
+                    .matrix-table th:not(:first-child), .matrix-table td:not(:first-child) { text-align: center; }
+                    .matrix-table tr:hover td { background: #fafbff; }
+                    .check-icon { color: #22c55e; font-size: 1.1rem; }
+                    .dash-icon { color: #d1d5db; }
+                </style>
+            </t>
+
+            <div style="display:flex; min-height:100vh; width:100%;">
+                
+                <t t-call="bootcamp_fapet.component_sidebar">
+                    <t t-set="active_menu" t-value="'hak_akses'"/>
+                </t>
+
+                <div class="main-content">
+                    <div class="topbar">
+                        <div>
+                            <div class="page-title">Kelola Hak Akses</div>
+                            <div class="page-subtitle">Manajemen user dan hak akses berbasis role (RBAC)</div>
+                        </div>
+                        <div class="topbar-date" id="current-date"/>
+                    </div>
+
+                    <div class="top-layout">
+                        <div class="panel-card">
+                            <div class="panel-title">
+                                <i class="fa fa-user-plus" style="color:#6d4c41;"/> Tambah User Baru
+                            </div>
+                            <form action="/bootcamp/hak_akses/submit" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Nama Lengkap</label>
+                                    <input type="text" name="name" class="form-control" placeholder="Masukkan nama lengkap" required="required"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Username / Login</label>
+                                    <input type="text" name="login" class="form-control" placeholder="Username untuk login" required="required"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" name="password" class="form-control" placeholder="Password" required="required"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Role / Jabatan</label>
+                                    <select name="group_id" class="form-control" required="required">
+                                        <option value="">Pilih Role...</option>
+                                        <t t-foreach="available_groups" t-as="group">
+                                            <option t-att-value="group.id"><t t-esc="group.name"/></option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn-submit">
+                                    <i class="fa fa-save"/> Tambah User
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="panel-card">
+                            <div class="panel-title">Daftar User</div>
+                            <div class="user-list">
+                                <t t-foreach="user_list" t-as="u">
+                                    <div class="user-card">
+                                        <div class="uc-avatar" t-attf-style="background-color: #{'#7c3aed' if u['role_code'] == 'direktur' else '#6d4c41' if u['role_code'] == 'keuangan' else '#8b5cf6' if u['role_code'] == 'operasional' else '#374151'};">
+                                            <t t-esc="u['initial']"/>
+                                        </div>
+                                        <div class="uc-info">
+                                            <div class="uc-header">
+                                                <div>
+                                                    <div class="uc-name"><t t-esc="u['name']"/></div>
+                                                    <div class="uc-username">@<t t-esc="u['login']"/></div>
+                                                </div>
+                                                <div class="status-aktif">Aktif <i class="fa fa-shield"/></div>
+                                            </div>
+                                            <div class="uc-role"><t t-esc="u['role_name']"/></div>
+                                            <div class="uc-access-label">Hak Akses:</div>
+                                            <div class="uc-badges">
+                                                <t t-foreach="u['access_badges']" t-as="badge">
+                                                    <span class="access-badge"><t t-esc="badge"/></span>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-card" style="margin-bottom: 24px;">
+                        <div class="panel-title">Matriks Hak Akses per Role</div>
+                        <table class="matrix-table">
+                            <thead>
+                                <tr>
+                                    <th>ROLE</th>
+                                    <th>DASHBOARD UTAMA</th>
+                                    <th>KEUANGAN</th>
+                                    <th>PENGADAAN</th>
+                                    <th>KPI</th>
+                                    <th>ADMIN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Direktur/Komisaris</td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Kepala Divisi Keuangan</td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Manajer Operasional</td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Kepala Divisi</td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Kepala Produksi &amp; Processing</td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                </tr>
+                                <tr>
+                                    <td>IT Staff</td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                    <td><span class="dash-icon">-</span></td>
+                                    <td><i class="fa fa-check check-icon"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <script>
+                var d = new Date();
+                var days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+                var months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+                var el = document.getElementById('current-date');
+                if (el) el.textContent = days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+            </script>
+        </t>
+    </template>
+</odoo>

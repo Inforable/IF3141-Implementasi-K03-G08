@@ -101,7 +101,7 @@
                 </t>
                 
                 <t t-if="user_groups['is_staff_it']">
-                    <a t-attf-href="/web#action=#{env.ref('bootcamp_fapet.action_kelola_hak_akses').id}" class="nav-item">
+                    <a href="/bootcamp/hak_akses" t-att-class="'nav-item ' + ('active' if active_menu == 'hak_akses' else '')">
                         <i class="fa fa-users"/> Kelola Hak Akses
                     </a>
                 </t>

@@ -13,6 +13,7 @@
         'security/bootcamp_groups.xml',
         'security/ir.model.access.csv',
         'views/kpi_aktual_views.xml',
+        'views/security_views.xml',
         'views/component_sidebar.xml',
         'views/dashboard_utama_views.xml',
         'views/dashboard_keuangan_views.xml',
