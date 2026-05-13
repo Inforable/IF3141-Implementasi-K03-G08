@@ -92,30 +92,33 @@ class SecurityController(http.Controller):
     
     @http.route('/bootcamp/hak_akses/submit', type='http', auth='user', methods=['POST'], csrf=True)
     def submit_user_baru(self, **post):
-        # 1. Keamanan ganda: Pastikan hanya IT yang bisa mengeksekusi penambahan user
         if not request.env.user.has_group('bootcamp_fapet.group_staff_it'):
             return request.redirect('/bootcamp/dashboard')
 
-        # 2. Ambil data dari form HTML
+        # Ambil data dari form HTML
         name = post.get('name')
         login = post.get('login')
         password = post.get('password')
         group_id = post.get('group_id')
 
-        # 3. Buat user baru di Odoo jika datanya lengkap
         if name and login and password and group_id:
             try:
+                # AMBIL ID GRUP "INTERNAL USER" BAWAAN ODOO
+                internal_user_group = request.env.ref('base.group_user').id
+
                 request.env['res.users'].sudo().create({
                     'name': name,
                     'login': login,
                     'password': password,
-                    # Sintaks (4, id) adalah cara khusus Odoo untuk menambahkan data ke relasi Many2many
-                    'groups_id': [(4, int(group_id))] 
+                    'groups_id': [
+                        (4, internal_user_group),   # Jadikan Internal User
+                        (4, int(group_id))          # Masukkan ke Role Bootcamp yang dipilih
+                    ] 
                 })
             except Exception as e:
-                # Jika terjadi error (misalnya username sudah dipakai), kita kembalikan saja dulu
-                # Di implementasi nyata, Anda bisa mengirimkan pesan error flash ke QWeb
+                # Jika terjadi error di database (misal: username/login sudah dipakai orang lain)
+                # Odoo akan melempar psycopg2.IntegrityError.
                 pass
 
-        # 4. Redirect (alihkan) kembali ke halaman kelola hak akses setelah selesai
+        # Redirect kembali ke halaman kelola hak akses
         return request.redirect('/bootcamp/hak_akses')

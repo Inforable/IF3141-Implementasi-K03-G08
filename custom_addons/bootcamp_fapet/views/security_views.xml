@@ -139,7 +139,7 @@
                                                 <div class="uc-header">
                                                     <div>
                                                         <div class="uc-name"><t t-esc="u['name']"/></div>
-                                                        <div class="uc-username">@<t t-esc="u['login']"/></div>
+                                                        <div class="uc-username"><t t-esc="u['login']"/></div>
                                                     </div>
                                                     <div class="status-aktif">Aktif</div>
                                                 </div>
