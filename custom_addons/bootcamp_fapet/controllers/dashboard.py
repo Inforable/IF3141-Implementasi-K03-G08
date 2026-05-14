@@ -129,7 +129,6 @@ class DashboardController(http.Controller):
             'laporan_rows': data['laporan_rows'],
         }
 
-<<<<<<< HEAD
         return request.render('bootcamp_fapet.template_dashboard_keuangan', values)
 
     @http.route('/bootcamp/dashboard/sdm', type='http', auth='user', website=False)
@@ -204,6 +203,3 @@ class DashboardController(http.Controller):
             request.env['bootcamp.kpi.target'].sudo().create(vals)
 
         return request.redirect('/bootcamp/kpi/targets')
-=======
-        return request.render('bootcamp_fapet.template_dashboard_keuangan', values)
->>>>>>> f00ad55fe2a636496c4b99dd23889d217a73285a
