@@ -2,8 +2,16 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 bootcamp_dashboard_all,Bootcamp Dashboard All,model_bootcamp_dashboard,,1,0,0,0
 access_kpi_target_manager,kpi.target.manager,model_bootcamp_kpi_target,bootcamp_fapet.group_manajer_operasional,1,1,1,1
 access_kpi_target_direktur,kpi.target.direktur,model_bootcamp_kpi_target,bootcamp_fapet.group_direktur,1,0,0,0
+access_kpi_target_keuangan,kpi.target.keuangan,model_bootcamp_kpi_target,bootcamp_fapet.group_kepala_keuangan,1,0,0,0
+access_kpi_target_prosesing,kpi.target.prosesing,model_bootcamp_kpi_target,bootcamp_fapet.group_kepala_prosesing,1,0,0,0
+access_kpi_target_produksi,kpi.target.produksi,model_bootcamp_kpi_target,bootcamp_fapet.group_kepala_produksi,1,0,0,0
+access_kpi_target_marketing,kpi.target.marketing,model_bootcamp_kpi_target,bootcamp_fapet.group_kepala_marketing,1,0,0,0
+access_kpi_target_pelayanan,kpi.target.pelayanan,model_bootcamp_kpi_target,bootcamp_fapet.group_kepala_pelayanan,1,0,0,0
 access_kpi_aktual_manager,kpi.aktual.manager,model_bootcamp_kpi_aktual,bootcamp_fapet.group_manajer_operasional,1,1,1,1
 access_kpi_aktual_direktur,kpi.aktual.direktur,model_bootcamp_kpi_aktual,bootcamp_fapet.group_direktur,1,0,0,0
+access_kpi_aktual_keuangan,kpi.aktual.keuangan,model_bootcamp_kpi_aktual,bootcamp_fapet.group_kepala_keuangan,1,0,0,0
+access_kpi_aktual_prosesing,kpi.aktual.prosesing,model_bootcamp_kpi_aktual,bootcamp_fapet.group_kepala_prosesing,1,0,0,0
+access_kpi_aktual_produksi,kpi.aktual.produksi,model_bootcamp_kpi_aktual,bootcamp_fapet.group_kepala_produksi,1,0,0,0
 access_kpi_aktual_marketing,kpi.aktual.marketing,model_bootcamp_kpi_aktual,bootcamp_fapet.group_kepala_marketing,1,1,1,0
 access_kpi_aktual_pelayanan,kpi.aktual.pelayanan,model_bootcamp_kpi_aktual,bootcamp_fapet.group_kepala_pelayanan,1,1,1,0
 access_biaya_operasional_keuangan,biaya.operasional.keuangan,model_bootcamp_biaya_operasional,bootcamp_fapet.group_kepala_keuangan,1,1,1,1

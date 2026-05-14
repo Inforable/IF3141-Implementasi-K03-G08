@@ -59,9 +59,10 @@
             <field name="name">Kepala Divisi Marketing</field>
             <field name="category_id" ref="module_bootcamp_fapet"/>
             <field name="comment">
-                Akses untuk mengisi aktual KPI.
+                Akses untuk mengisi aktual KPI dan melihat dashboard KPI.
             </field>
             <field name="x_bootcamp_utama" eval="True"/>
+            <field name="x_bootcamp_kpi" eval="True"/>
             <field name="x_bootcamp_input_kpi" eval="True"/>
         </record>
 
@@ -69,9 +70,10 @@
             <field name="name">Kepala Divisi Pelayanan</field>
             <field name="category_id" ref="module_bootcamp_fapet"/>
             <field name="comment">
-                Akses untuk mengisi aktual KPI.
+                Akses untuk mengisi aktual KPI dan melihat dashboard KPI.
             </field>
             <field name="x_bootcamp_utama" eval="True"/>
+            <field name="x_bootcamp_kpi" eval="True"/>
             <field name="x_bootcamp_input_kpi" eval="True"/>
         </record>
     </data>
