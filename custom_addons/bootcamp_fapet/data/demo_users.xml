@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <data>
+
+        <!-- Direktur -->
+        <record id="user_direktur" model="res.users">
+            <field name="name">Budi Santoso</field>
+            <field name="login">direktur</field>
+            <field name="password">direktur123</field>
+            <field name="groups_id" eval="[(4, ref('bootcamp_fapet.group_direktur'))]"/>
+        </record>
+
+        <!-- Kepala Keuangan -->
+        <record id="user_kepala_keuangan" model="res.users">
+            <field name="name">Sari Dewi</field>
+            <field name="login">keuangan</field>
+            <field name="password">keuangan123</field>
+            <field name="groups_id" eval="[(4, ref('bootcamp_fapet.group_kepala_keuangan'))]"/>
+        </record>
+
+        <!-- Manajer Operasional -->
+        <record id="user_manajer_operasional" model="res.users">
+            <field name="name">Andi Wijaya</field>
+            <field name="login">manajer</field>
+            <field name="password">manajer123</field>
+            <field name="groups_id" eval="[(4, ref('bootcamp_fapet.group_manajer_operasional'))]"/>
+        </record>
+
+        <!-- Kepala Prosesing -->
+        <record id="user_kepala_prosesing" model="res.users">
+            <field name="name">Rini Kusuma</field>
+            <field name="login">prosesing</field>
+            <field name="password">prosesing123</field>
+            <field name="groups_id" eval="[(4, ref('bootcamp_fapet.group_kepala_prosesing'))]"/>
+        </record>
+
+        <!-- Staff IT -->
+        <record id="user_staff_it" model="res.users">
+            <field name="name">Dimas Pratama</field>
+            <field name="login">it</field>
+            <field name="password">it123</field>
+            <field name="groups_id" eval="[(4, ref('bootcamp_fapet.group_staff_it'))]"/>
+        </record>
+
+    </data>
+</odoo>

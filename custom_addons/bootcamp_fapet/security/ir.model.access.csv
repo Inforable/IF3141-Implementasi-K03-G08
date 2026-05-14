@@ -11,3 +11,8 @@ access_pos_transaction_keuangan,pos.transaction.keuangan,model_bootcamp_pos_tran
 access_pos_transaction_direktur,pos.transaction.direktur,model_bootcamp_pos_transaction,bootcamp_fapet.group_direktur,1,0,0,0
 access_pos_sync_log_it,pos.sync.log.it,model_bootcamp_pos_sync_log,bootcamp_fapet.group_staff_it,1,1,1,1
 access_pos_sync_log_direktur,pos.sync.log.direktur,model_bootcamp_pos_sync_log,bootcamp_fapet.group_direktur,1,0,0,0
+access_stok_bahan_baku_prosesing,stok.bahan.baku.prosesing,model_bootcamp_stok_bahan_baku,bootcamp_fapet.group_kepala_prosesing,1,1,1,1
+access_stok_bahan_baku_direktur,stok.bahan.baku.direktur,model_bootcamp_stok_bahan_baku,bootcamp_fapet.group_direktur,1,0,0,0
+access_stok_bahan_baku_keuangan,stok.bahan.baku.keuangan,model_bootcamp_stok_bahan_baku,bootcamp_fapet.group_kepala_keuangan,1,0,0,0
+access_stok_movement_prosesing,stok.movement.prosesing,model_bootcamp_stok_movement,bootcamp_fapet.group_kepala_prosesing,1,1,1,1
+access_stok_movement_direktur,stok.movement.direktur,model_bootcamp_stok_movement,bootcamp_fapet.group_direktur,1,0,0,0
