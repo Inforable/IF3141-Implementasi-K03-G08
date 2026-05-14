@@ -23,6 +23,8 @@
         'views/pos_sync_views.xml',
         'views/procurement_dashboard_views.xml',
         'views/input_stock_views.xml',
+        'views/dashboard_sdm_views.xml',
+        'views/kpi_targets_views.xml',
         'views/bootcamp_menus.xml',
     ],
     'assets': {
