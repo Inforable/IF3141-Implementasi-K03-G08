@@ -3,7 +3,7 @@
 
     <record id="action_dashboard_sdm" model="ir.actions.act_url">
         <field name="name">Dashboard Operasional SDM (KPI)</field>
-        <field name="url">/bootcamp/dashboard/sdm</field>
+        <field name="url">/bootcamp/kpi</field>
         <field name="target">self</field>
     </record>
 
@@ -29,6 +29,7 @@
                     .dashboard-content{
                         flex:1;
                         padding:24px;
+                        margin-left:240px;
                     }
 
                     .dashboard-title{

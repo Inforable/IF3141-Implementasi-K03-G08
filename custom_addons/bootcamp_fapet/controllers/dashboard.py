@@ -51,7 +51,7 @@ class DashboardController(http.Controller):
             'target_kpi': any(getattr(g, 'x_bootcamp_target_kpi', False) for g in groups),
             'sinkron_pos': any(getattr(g, 'x_bootcamp_sinkron_pos', False) for g in groups),
             'hak_akses': True if is_it_staff else any(getattr(g, 'x_bootcamp_hak_akses', False) for g in groups),
-            'log_sistem': True if is_it_staff else any(getattr(g, 'x_bootcamp_log_sistem', False) for g in groups),
+            # 'log_sistem': True if is_it_staff else any(getattr(g, 'x_bootcamp_log_sistem', False) for g in groups),
             'is_direktur': user.has_group('bootcamp_fapet.group_direktur'),
             'is_kepala_keuangan': user.has_group('bootcamp_fapet.group_kepala_keuangan'),
             'is_manajer_operasional': user.has_group('bootcamp_fapet.group_manajer_operasional'),
@@ -204,6 +204,7 @@ class DashboardController(http.Controller):
             'dashboard_data': dashboard_data,
             'user': user,
             'user_groups': user_groups,
+            'active_menu': 'utama',
         }
         return request.render('bootcamp_fapet.template_dashboard_utama', values)
 
@@ -223,12 +224,13 @@ class DashboardController(http.Controller):
         values = {
             'user': user,
             'user_groups': user_groups,
+            'active_menu': 'keuangan',
             'periode': periode,
             **data,
         }
         return request.render('bootcamp_fapet.template_dashboard_keuangan', values)
 
-    @http.route('/bootcamp/dashboard/sdm', type='http', auth='user', website=False)
+    @http.route('/bootcamp/kpi', type='http', auth='user', website=False)
     def dashboard_sdm(self, **kwargs):
         user = request.env.user
         user_groups = self._get_permissions(user)
@@ -276,7 +278,7 @@ class DashboardController(http.Controller):
             'user_groups': user_groups,
             'kpi_summary': kpi_summary,
             'overall_avg': round(overall_avg, 1),
-            'divisions': sorted(set(divisions)),
+            'divisions': sorted(set(d for d in divisions if d)),
             'trend_labels': json.dumps(trend_labels),
             'trend_data': json.dumps(trend_data),
         }

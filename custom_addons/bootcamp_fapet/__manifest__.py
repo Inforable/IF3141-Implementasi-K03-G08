@@ -11,6 +11,7 @@
     'data': [
         'data/kpi_data.xml',
         'data/pos_sync_data.xml',
+        'data/bahan_baku_data.xml',
         'security/bootcamp_groups.xml',
         'security/ir.model.access.csv',
         'views/kpi_aktual_views.xml',
@@ -22,8 +23,18 @@
         'views/kpi_targets_views.xml',
         'views/biaya_operasional_views.xml',
         'views/pos_sync_views.xml',
+        'views/procurement_dashboard_views.xml',
+        'views/input_stock_views.xml',
         'views/bootcamp_menus.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'bootcamp_fapet/views/dashboard.js',
+            'bootcamp_fapet/views/dashboard.xml',
+            'bootcamp_fapet/views/stock_input_form.js',
+            'bootcamp_fapet/views/stock_input_form.xml',
+        ],
+    },
     'installable': True,
     'application': True,
     'auto_install': False,
