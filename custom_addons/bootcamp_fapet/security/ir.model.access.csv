@@ -4,6 +4,8 @@ access_kpi_target_manager,kpi.target.manager,model_bootcamp_kpi_target,bootcamp_
 access_kpi_target_direktur,kpi.target.direktur,model_bootcamp_kpi_target,bootcamp_fapet.group_direktur,1,0,0,0
 access_kpi_aktual_manager,kpi.aktual.manager,model_bootcamp_kpi_aktual,bootcamp_fapet.group_manajer_operasional,1,1,1,1
 access_kpi_aktual_direktur,kpi.aktual.direktur,model_bootcamp_kpi_aktual,bootcamp_fapet.group_direktur,1,0,0,0
+access_kpi_aktual_marketing,kpi.aktual.marketing,model_bootcamp_kpi_aktual,bootcamp_fapet.group_kepala_marketing,1,1,1,0
+access_kpi_aktual_pelayanan,kpi.aktual.pelayanan,model_bootcamp_kpi_aktual,bootcamp_fapet.group_kepala_pelayanan,1,1,1,0
 access_biaya_operasional_keuangan,biaya.operasional.keuangan,model_bootcamp_biaya_operasional,bootcamp_fapet.group_kepala_keuangan,1,1,1,1
 access_biaya_operasional_direktur,biaya.operasional.direktur,model_bootcamp_biaya_operasional,bootcamp_fapet.group_direktur,1,0,0,0
 access_pos_transaction_it,pos.transaction.it,model_bootcamp_pos_transaction,bootcamp_fapet.group_staff_it,1,1,1,1

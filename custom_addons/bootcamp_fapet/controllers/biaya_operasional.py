@@ -20,11 +20,13 @@ class BiayaOperasionalController(http.Controller):
     def _get_permissions(self, user):
         groups = user.sudo().groups_id
         is_it_staff = user.has_group('bootcamp_fapet.group_staff_it')
+        is_marketing = user.has_group('bootcamp_fapet.group_kepala_marketing')
+        is_pelayanan = user.has_group('bootcamp_fapet.group_kepala_pelayanan')
         return {
             'utama': True if is_it_staff else any(getattr(g, 'x_bootcamp_utama', False) for g in groups),
             'keuangan': any(getattr(g, 'x_bootcamp_keuangan', False) for g in groups),
             'pengadaan': any(getattr(g, 'x_bootcamp_pengadaan', False) for g in groups),
-            'kpi': any(getattr(g, 'x_bootcamp_kpi', False) for g in groups),
+            'kpi': False if (is_marketing or is_pelayanan) else any(getattr(g, 'x_bootcamp_kpi', False) for g in groups),
             'input_biaya': any(getattr(g, 'x_bootcamp_input_biaya', False) for g in groups),
             'input_stok': any(getattr(g, 'x_bootcamp_input_stok', False) for g in groups),
             'input_kpi': any(getattr(g, 'x_bootcamp_input_kpi', False) for g in groups),

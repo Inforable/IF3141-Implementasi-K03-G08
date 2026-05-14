@@ -54,5 +54,25 @@
                 Akses ke konfigurasi sistem dan pengelolaan hak akses.
             </field>
         </record>
+
+        <record id="group_kepala_marketing" model="res.groups">
+            <field name="name">Kepala Divisi Marketing</field>
+            <field name="category_id" ref="module_bootcamp_fapet"/>
+            <field name="comment">
+                Akses untuk mengisi aktual KPI.
+            </field>
+            <field name="x_bootcamp_utama" eval="True"/>
+            <field name="x_bootcamp_input_kpi" eval="True"/>
+        </record>
+
+        <record id="group_kepala_pelayanan" model="res.groups">
+            <field name="name">Kepala Divisi Pelayanan</field>
+            <field name="category_id" ref="module_bootcamp_fapet"/>
+            <field name="comment">
+                Akses untuk mengisi aktual KPI.
+            </field>
+            <field name="x_bootcamp_utama" eval="True"/>
+            <field name="x_bootcamp_input_kpi" eval="True"/>
+        </record>
     </data>
 </odoo>
