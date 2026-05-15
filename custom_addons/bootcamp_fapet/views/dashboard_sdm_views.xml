@@ -226,19 +226,19 @@
 
                         <div class="summary-card">
                             <div class="summary-label">Rata-rata KPI</div>
-                            <div class="summary-value"><t t-esc="overall_avg"/></div>
+                            <div id="overall-avg" class="summary-value"><t t-esc="overall_avg"/></div>
                         </div>
 
                         <div class="summary-card">
                             <div class="summary-label">Divisi Mencapai Target</div>
-                            <div class="summary-value">
-                                <t t-esc="len(kpi_summary)"/> / 6
+                            <div id="divisi-reached" class="summary-value">
+                                <t t-esc="len([r for r in kpi_summary if r['avg_percent'] >= 100])"/> / <t t-esc="len(kpi_summary) or 6"/>
                             </div>
                         </div>
 
                         <div class="summary-card">
                             <div class="summary-label">Total Divisi</div>
-                            <div class="summary-value">
+                            <div id="total-divisi" class="summary-value">
                                 <t t-esc="len(kpi_summary)"/>
                             </div>
                         </div>
@@ -268,57 +268,30 @@
                     </div>
 
                     <!-- KPI GRID -->
-                    <div class="kpi-grid">
-
+                    <div id="kpi-grid" class="kpi-grid">
                         <t t-foreach="kpi_summary" t-as="row">
-
-                            <div class="kpi-card">
-
+                            <div class="kpi-card" data-divisi="<t t-esc="row['divisi']"/>">
                                 <div class="kpi-header">
-                                    <div class="kpi-title">
-                                        <t t-esc="row['divisi']"/>
-                                    </div>
-
-                                    <div class="kpi-badge">
-                                        <t t-esc="row['avg_percent']"/>%
-                                    </div>
+                                    <div class="kpi-title"><t t-esc="row['divisi']"/></div>
+                                    <div class="kpi-badge"><t t-esc="row['avg_percent']"/>%</div>
                                 </div>
-
                                 <t t-foreach="row['kpis']" t-as="k">
-
-                                    <div class="kpi-indicator">
-                                        <t t-esc="k['indikator']"/>
-                                    </div>
-
+                                    <div class="kpi-indicator"><t t-esc="k['indikator']"/></div>
                                     <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
                                         <span>Target: <t t-esc="k['target']"/></span>
                                         <span>Aktual: <t t-esc="k['latest_actual'] or '-'"/></span>
                                     </div>
-
                                     <div class="progress">
-                                        <div class="progress-bar"
-                                             t-att-style="'width:'+str(min(100, k['percent']))+'%'">
-                                        </div>
+                                        <div class="progress-bar" t-att-style="'width:'+str(min(100, k['percent']))+'%'"></div>
                                     </div>
-
                                 </t>
-
-                                <!-- Circular Progress -->
                                 <div class="circle-wrap">
-                                    <div class="circle"
-                                         t-att-style="'--percent:'+str(row['avg_percent'])">
-
-                                        <div class="circle-inner">
-                                            <t t-esc="row['avg_percent']"/>%
-                                        </div>
-
+                                    <div class="circle" t-att-style="'--percent:'+str(row['avg_percent'])">
+                                        <div class="circle-inner"><t t-esc="row['avg_percent']"/>%</div>
                                     </div>
                                 </div>
-
                             </div>
-
                         </t>
-
                     </div>
 
                     <!-- CHART -->
@@ -343,7 +316,7 @@
                     if (canvas &amp;&amp; typeof Chart !== 'undefined') {
                         var labels = JSON.parse(canvas.dataset.labels || '[]');
                         var values = JSON.parse(canvas.dataset.values || '[]');
-                        new Chart(canvas, {
+                        window._kpiChart = new Chart(canvas, {
                             type: 'bar',
                             data: {
                                 labels: labels,
@@ -370,6 +343,68 @@
                         });
                     }
                 })();
+
+                // Filter handler: fetch kpi summary and rerender parts
+                document.getElementById('apply-filter').addEventListener('click', function(){
+                    var div = document.getElementById('filter-divisi').value || null;
+                    var f = document.getElementById('filter-from').value || null;
+                    var t = document.getElementById('filter-to').value || null;
+
+                    fetch('/bootcamp/api/kpi_summary', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({divisi: div, date_from: f, date_to: t})
+                    }).then(function(r){return r.json();}).then(function(resp){
+                        if(resp && resp.status === 'ok'){
+                            var data = resp.data || [];
+
+                            // overall avg
+                            var overall = 0;
+                            if(data.length){
+                                overall = data.reduce(function(s, row){ return s + (row.avg_percent||0); }, 0) / data.length;
+                            }
+                            document.getElementById('overall-avg').textContent = overall.toFixed(1) + '%';
+
+                            // divisi reached / total
+                            var reached = data.filter(function(r){ return r.avg_percent >= 100; }).length;
+                            document.getElementById('divisi-reached').textContent = reached + ' / ' + (data.length || 6);
+                            document.getElementById('total-divisi').textContent = data.length;
+
+                            // rebuild grid
+                            var grid = document.getElementById('kpi-grid');
+                            grid.innerHTML = '';
+                            data.forEach(function(row){
+                                var card = document.createElement('div'); card.className='kpi-card';
+                                var header = document.createElement('div'); header.className='kpi-header';
+                                header.innerHTML = '<div class="kpi-title">'+(row.divisi||'')+'</div><div class="kpi-badge">'+row.avg_percent+'%</div>';
+                                card.appendChild(header);
+                                row.kpis.forEach(function(k){
+                                    var ind = document.createElement('div'); ind.className='kpi-indicator'; ind.textContent = k.indikator;
+                                    var info = document.createElement('div'); info.style.display='flex'; info.style.justifyContent='space-between'; info.style.marginBottom='6px';
+                                    info.innerHTML = '<span>Target: '+(k.target||'-')+'</span><span>Aktual: '+(k.latest_actual||'-')+'</span>';
+                                    var prog = document.createElement('div'); prog.className='progress';
+                                    var bar = document.createElement('div'); bar.className='progress-bar'; bar.style.width = Math.min(100, k.percent) + '%';
+                                    prog.appendChild(bar);
+                                    card.appendChild(ind); card.appendChild(info); card.appendChild(prog);
+                                });
+                                var circwrap = document.createElement('div'); circwrap.className='circle-wrap';
+                                var circ = document.createElement('div'); circ.className='circle'; circ.style.setProperty('--percent', String(row.avg_percent));
+                                var inner = document.createElement('div'); inner.className='circle-inner'; inner.textContent = row.avg_percent + '%';
+                                circ.appendChild(inner); circwrap.appendChild(circ); card.appendChild(circwrap);
+                                grid.appendChild(card);
+                            });
+
+                            // update chart
+                            if(window._kpiChart){
+                                var labels = data.map(function(r){ return r.divisi; });
+                                var vals = data.map(function(r){ return r.avg_percent; });
+                                window._kpiChart.data.labels = labels;
+                                window._kpiChart.data.datasets[0].data = vals;
+                                window._kpiChart.update();
+                            }
+                        }
+                    });
+                });
             </script>
 
         </t>
