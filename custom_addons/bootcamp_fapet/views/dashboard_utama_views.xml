@@ -145,7 +145,7 @@
                 </style>
             </t>
 
-            <div style="display:flex; min-height:100vh;">
+            <div style="display:flex; min-height:100vh; width:100%;">
 
                 <!-- ═══════════ SIDEBAR ═══════════ -->
                 <t t-call="bootcamp_fapet.component_sidebar"/>
