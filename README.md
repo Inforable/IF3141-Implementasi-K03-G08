@@ -58,6 +58,10 @@ Expected Result:
 ```bash
 docker compose up -d
 ```
+atau jika gagal dapat tambahkan flag berikut:
+```bash
+docker compose up -d -i bootcamp_fapet
+```
 
 Expected Result:
 
@@ -65,7 +69,28 @@ Expected Result:
 
 ---
 
-## 3. Akses Sistem Odoo
+## 3. Restore Database
+
+Jalankan script import untuk memuat database dan filestore dari dump terbaru:
+
+```bash
+bash scripts/import_db.sh
+```
+
+Script akan otomatis memilih file dump terbaru dari folder `dump/`. Jika ingin menggunakan dump tertentu, sertakan path-nya sebagai argumen:
+
+```bash
+bash scripts/import_db.sh dump/odoo_backup_20260515_102959.dump
+```
+
+Expected Result:
+
+* Database berhasil di-restore dan seluruh container berjalan kembali.
+* Filestore (gambar, lampiran) ikut ter-restore jika file `_filestore.tar.gz` tersedia.
+
+---
+
+## 4. Akses Sistem Odoo
 
 Buka browser dan akses:
 
@@ -81,7 +106,7 @@ Expected Result:
 
 ---
 
-## 4. Login ke Sistem
+## 5. Login ke Sistem
 
 Masukkan username dan password sesuai role pengguna.
 
@@ -93,7 +118,7 @@ Expected Result:
 
 ---
 
-## 5. Mengakses Dashboard Keuangan
+## 6. Mengakses Dashboard Keuangan
 
 Klik menu **Dashboard Keuangan** pada sidebar.
 
@@ -105,7 +130,7 @@ Expected Result:
 
 ---
 
-## 6. Mengakses Dashboard Pengadaan
+## 7. Mengakses Dashboard Pengadaan
 
 Klik menu **Dashboard Pengadaan** pada sidebar.
 
@@ -117,7 +142,7 @@ Expected Result:
 
 ---
 
-## 7. Mengakses Dashboard KPI
+## 8. Mengakses Dashboard KPI
 
 Klik menu **Dashboard KPI** pada sidebar.
 
@@ -129,7 +154,7 @@ Expected Result:
 
 ---
 
-## 8. Input Biaya Operasional
+## 9. Input Biaya Operasional
 
 Klik menu **Input Biaya Operasional**.
 
@@ -141,7 +166,7 @@ Expected Result:
 
 ---
 
-## 9. Input Stok Bahan Baku
+## 10. Input Stok Bahan Baku
 
 Klik menu **Input Stok Bahan Baku**.
 
@@ -153,7 +178,7 @@ Expected Result:
 
 ---
 
-## 10. Input Target KPI
+## 11. Input Target KPI
 
 Klik menu **Target KPI**.
 
@@ -165,7 +190,7 @@ Expected Result:
 
 ---
 
-## 11. Sinkronisasi POS
+## 12. Sinkronisasi POS
 
 Klik menu **Sinkronisasi POS**.
 
@@ -177,7 +202,7 @@ Expected Result:
 
 ---
 
-## 12. Kelola Hak Akses
+## 13. Kelola Hak Akses
 
 Klik menu **Kelola Hak Akses**.
 
